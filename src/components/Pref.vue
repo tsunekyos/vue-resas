@@ -1,10 +1,12 @@
 <template lang="pug">
-  .prefList
-    PrefItem(
-      v-for='pref in prefs',
-      :key='pref.prefCode',
-      :pref='pref',
-      @change='changeCheckBox'
+  .pref
+    .heading: h2 リスト
+    .prefList
+      PrefItem(
+        v-for='pref in prefs',
+        :key='pref.prefCode',
+        :pref='pref',
+        @change='changeCheckBox'
       )
 </template>
 
@@ -109,8 +111,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .prefList {
+  .heading {
+    text-align: left;
+  }
+  h2 {
+    display: inline-block;
     border: 1px solid black;
+  }
+  .prefList {
     display: flex;
     flex-wrap: wrap;
   }

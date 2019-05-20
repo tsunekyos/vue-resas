@@ -1,7 +1,6 @@
 <template lang="pug">
   #app
-    h1 都道府県別の総人口推移
-    PrefGraph
+    PrefGraph(title="タイトル")
 </template>
 
 <script>
