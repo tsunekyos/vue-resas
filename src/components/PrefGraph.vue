@@ -81,7 +81,6 @@ export default {
     margin: 0 auto;
   }
   .heading {
-    // border: 1px dashed red;
     background-color: #f2f2f2;
   }
   h1 {
