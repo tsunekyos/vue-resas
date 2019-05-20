@@ -4,7 +4,8 @@
         input(
           type='checkbox',
           :value='pref.prefCode',
-          @change="change"
+          @change="change",
+          :disabled="state"
         )
         |{{pref.prefName}}
 </template>
@@ -17,6 +18,14 @@ export default {
       type: Object,
       required: true,
     },
+    state: {
+      type: Boolean,
+      required: true,
+    }
+  },
+  data() {
+    return {
+    }
   },
   methods: {
     change(e) {
@@ -36,7 +45,7 @@ export default {
   }
   .prefItem {
     text-align: left;
-    min-width: 150px;
-    margin-right: 10px;
+    min-width: 5.5em;
+    margin: .25em 1em .25em 0;
   }
 </style>

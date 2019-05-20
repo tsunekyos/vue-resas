@@ -1,6 +1,6 @@
 <template lang="pug">
   #app
-    PrefGraph(title="タイトル")
+    PrefGraph(title="都道府県別人口推移グラフ")
 </template>
 
 <script>
@@ -35,5 +35,8 @@ export default {
 }
 .sfc {
   border: 2px solid skyblue;
+}
+h1, h2 {
+  margin: 0;
 }
 </style>
