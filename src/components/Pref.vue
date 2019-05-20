@@ -68,9 +68,8 @@ export default {
             console.log('RESAS-API ERROR: ' + response.data.statusCode);
             // throw response.data;
           }
-          // 人口数のみ抽出
+
           const popsData = res.data.result.data[0].data.map(val => {
-            console.log(val);
             return [ val.year, val.value ];
           });
           return popsData;
