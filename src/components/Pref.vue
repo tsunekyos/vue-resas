@@ -1,6 +1,11 @@
 <template lang="pug">
   .prefList
-    PrefItem(v-for='pref in prefs' :key='pref.prefCode' :pref='pref' @change='changeCheckBox')
+    PrefItem(
+      v-for='pref in prefs',
+      :key='pref.prefCode',
+      :pref='pref',
+      @change='changeCheckBox'
+      )
 </template>
 
 <script>
@@ -41,8 +46,7 @@ export default {
           // ここ綺麗にしたい
           // RESAS-APIでは成功時、statusCodeはundefined
           if (res.data.statusCode !== undefined) {
-            console.log('RESAS-API ERROR: ' + response.data.statusCode);
-            // throw response.data;
+            console.log('RESAS-API ERROR: ' + res.data.statusCode);
           }
 
           return res.data.result;
@@ -65,8 +69,7 @@ export default {
         .then((res) => {
           // RESAS-APIでは成功時、statusCodeはundefined
           if (res.data.statusCode !== undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
-            console.log('RESAS-API ERROR: ' + response.data.statusCode);
-            // throw response.data;
+            console.log('RESAS-API ERROR: ' + res.data.statusCode);
           }
 
           const popsData = res.data.result.data[0].data.map(val => {
@@ -80,7 +83,7 @@ export default {
       return result;
     },
     getPrefNameByCode(prefCode) {
-      return this.prefs.find(pref => pref.prefCode === prefCode).prefName;;
+      return this.prefs.find(pref => pref.prefCode === prefCode).prefName;
     },
     async changeCheckBox(e) {
       const targetPrefCode = parseInt(e.target.value, 10);
