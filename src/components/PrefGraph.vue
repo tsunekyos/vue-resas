@@ -20,7 +20,7 @@ const RESAS = {
   domain: 'https://opendata.resas-portal.go.jp/',
   endPoints: {
     prefectures: 'api/v1/prefectures',
-    populations: 'api/v1/population/composition/perYear', // prefCode, cityCode
+    populations: 'api/v1/population/composition/perYear',
   },
   options: {
     headers: {
@@ -62,10 +62,9 @@ export default {
     async getPrefList() {
       const result = await axios.get(RESAS.domain + RESAS.endPoints.prefectures, RESAS.options)
         .then((res) => {
-          // ここ綺麗にしたい
-          // RESAS-APIでは成功時、statusCodeはundefined
-          if (res.data.statusCode !== undefined) {
-            console.log('RESAS-API ERROR: ' + res.data.statusCode);
+          // 成功時、statusCodeはundefined
+          if (res.data.statusCode !== undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
+            throw new Error(`RESAS-API ERROR: ${res.data.statusCode}`);
           }
           return res.data.result;
         })
@@ -84,9 +83,9 @@ export default {
       };
       const result = await axios.get(RESAS.domain + RESAS.endPoints.populations, myOptions)
         .then((res) => {
-          // RESAS-APIでは成功時、statusCodeはundefined
-          if (res.data.statusCode !== undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
-            console.log('RESAS-API ERROR: ' + res.data.statusCode);
+          // 成功時、statusCodeはundefined
+          if (res.data.statusCode !== undefined) {
+            throw new Error(`RESAS-API ERROR: ${res.data.statusCode}`);
           }
 
           const popsData = res.data.result.data[0].data.map(val => {
