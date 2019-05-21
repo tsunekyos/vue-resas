@@ -4,8 +4,8 @@
         input(
           type='checkbox',
           :value='pref.prefCode',
+          :disabled='pref.disabled',
           @change="change",
-          :disabled="state"
         )
         |{{pref.prefName}}
 </template>
@@ -18,10 +18,6 @@ export default {
       type: Object,
       required: true,
     },
-    state: {
-      type: Boolean,
-      required: true,
-    }
   },
   data() {
     return {

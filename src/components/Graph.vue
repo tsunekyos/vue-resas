@@ -38,6 +38,13 @@ const options = {
   },
 
   plotOptions: {
+    series: {
+      events: {
+        afterAnimate: function () {
+            console.log('afterAnimate');
+        }
+      }
+    }
   },
   lang: {
     noData: "Nichts zu anzeigen"
@@ -59,7 +66,9 @@ export default {
     }
   },
   props: {
-
+    queue: {
+      type: Object,
+    }
   },
   watch: {
 
@@ -81,6 +90,22 @@ export default {
       const targetSeries = this.chart.get(seriesId);
       if(targetSeries !== undefined){
         targetSeries.remove();
+      }
+    },
+  },
+  watch: {
+    queue: function(){
+      console.log(this.queue);
+      if(this.queue.isAdd) {
+        const series = {
+          id: this.queue.id,
+          name: this.queue.name,
+          data: this.queue.data,
+        }
+        this.addSeries(series);
+        this.$emit('complete', this.queue.id);
+      } else {
+        this.removeSeriesById(this.queue.id);
       }
     },
   },
