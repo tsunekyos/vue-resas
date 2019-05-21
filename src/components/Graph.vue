@@ -14,12 +14,15 @@ const options = {
   chart: {
     backgroundColor: '#f8f8f8',
     showAxes: true,
+    marginTop: 100,
+    marginLeft: 100,
+    marginBottom: 100,
+    marginRight: 120,
   },
   xAxis: {
     title: {
       text: '年度',
       align: 'high',
-      margin: 50,
     },
   },
   yAxis: {
@@ -27,14 +30,17 @@ const options = {
       text: '人口数',
       align: 'high',
       rotation: 0,
-      y: -10,
-      margin: 50,
+      y: -40,
+      offset: -5
     },
   },
   legend: {
     layout: 'vertical',
     align: 'right',
     verticalAlign: 'top',
+    x: 0,
+    y: 80,
+    // margin: 100
   },
 
   plotOptions: {
