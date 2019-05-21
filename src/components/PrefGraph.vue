@@ -43,7 +43,6 @@ export default {
         name: '',
         data: [],
       },
-      no: 0,
     }
   },
   props: {
@@ -103,7 +102,6 @@ export default {
     },
     createQueue(isAdd, id, name=null, data=null) {
       return {
-        no: this.no++,
         isAdd: isAdd,
         id: id,
         name: name,
