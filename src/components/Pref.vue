@@ -17,13 +17,13 @@ export default {
 	components: {
     PrefItem,
   },
+  data() {
+    return {
+    }
+  },
   props: {
     prefs: {
       type: Array,
-    }
-  },
-  data() {
-    return {
     }
   },
   methods: {

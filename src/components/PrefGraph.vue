@@ -34,11 +34,6 @@ export default {
     Pref,
     Graph,
   },
-  props: {
-    title: {
-      type: String,
-    }
-  },
   data() {
     return {
       prefs: [],
@@ -49,6 +44,11 @@ export default {
         data: [],
       },
       no: 0,
+    }
+  },
+  props: {
+    title: {
+      type: String,
     }
   },
   methods: {

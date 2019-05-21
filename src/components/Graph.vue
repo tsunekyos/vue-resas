@@ -40,7 +40,6 @@ const options = {
     verticalAlign: 'top',
     x: 0,
     y: 80,
-    // margin: 100
   },
 
   plotOptions: {
@@ -66,22 +65,6 @@ export default {
       type: Object,
     }
   },
-  methods: {
-    initGraph (){
-      this.chart = Highcharts.chart('MyChart', options);
-    },
-    addSeries(seriesObj){
-      const series = {
-        id: seriesObj.id,
-        name: seriesObj.name,
-        data: seriesObj.data,
-      };
-      this.chart.addSeries(series);
-    },
-    removeSeriesById(seriesId) {
-      this.chart.get(seriesId).remove();
-    },
-  },
   watch: {
     queue: function(){
       console.log(this.queue);
@@ -96,6 +79,22 @@ export default {
       } else {
         this.removeSeriesById(this.queue.id);
       }
+    },
+  },
+  methods: {
+    initGraph (){
+      this.chart = Highcharts.chart('MyChart', options);
+    },
+    addSeries(seriesObj){
+      const series = {
+        id: seriesObj.id,
+        name: seriesObj.name,
+        data: seriesObj.data,
+      };
+      this.chart.addSeries(series);
+    },
+    removeSeriesById(seriesId) {
+      this.chart.get(seriesId).remove();
     },
   },
   mounted() {

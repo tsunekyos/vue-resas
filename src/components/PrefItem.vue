@@ -13,21 +13,21 @@
 <script>
 
 export default {
+  data() {
+    return {
+    }
+  },
   props: {
     pref: {
       type: Object,
       required: true,
     },
   },
-  data() {
-    return {
-    }
-  },
   methods: {
     change(e) {
       this.$emit('change', e);
-    }
-  }
+    },
+  },
 }
 
 </script>
