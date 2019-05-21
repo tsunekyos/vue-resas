@@ -1,65 +1,38 @@
 <template lang="pug">
   .prefGraph
     .heading: h1 {{ title }}
-    pref(@add="addSeries", @remove="removeSeriesById")
-    #MyChart
+    pref(
+      :prefs='prefs',
+      @add="addSeriesByCode",
+      @remove="removeSeriesById"
+    )
+    graph(:queue='queue', @complete='unlock')
 </template>
 
 <script>
 
+import axios from 'axios';
+
 import Pref from './Pref.vue'
+import Graph from './Graph.vue'
 
-import Highcharts from 'highcharts';
-import 'highcharts/modules/no-data-to-display.js';
-
-const options = {
-  title: {
-    text: '',
+const RESAS = {
+  domain: 'https://opendata.resas-portal.go.jp/',
+  endPoints: {
+    prefectures: 'api/v1/prefectures',
+    populations: 'api/v1/population/composition/perYear', // prefCode, cityCode
   },
-  chart: {
-    backgroundColor: '#f8f8f8',
-    showAxes: true,
-  },
-  xAxis: {
-    title: {
-      text: '年度',
-      align: 'high',
-      margin: 50,
+  options: {
+    headers: {
+      'X-API-KEY': '04dBR517ftRFMGaoYnHETY4Qqv0c5lqG75ihWT9j',
     },
   },
-  yAxis: {
-    title: {
-      text: '人口数',
-      align: 'high',
-      rotation: 0,
-      y: -10,
-      margin: 50,
-    },
-  },
-  legend: {
-    layout: 'vertical',
-    align: 'right',
-    verticalAlign: 'top',
-  },
-
-  plotOptions: {
-  },
-  lang: {
-    noData: "Nichts zu anzeigen"
-  },
-  noData: {
-    style: {
-      fontWeight: 'bold',
-      fontSize: '15px',
-      color: '#303030'
-    }
-  },
-  series: [],
-}
+};
 
 export default {
   components: {
     Pref,
+    Graph,
   },
   props: {
     title: {
@@ -68,32 +41,95 @@ export default {
   },
   data() {
     return {
-      chart: undefined,
+      prefs: [],
+      queue: {
+        isAdd: true,
+        id: 0,
+        name: '',
+        data: [],
+      },
+      no: 0,
     }
   },
   methods: {
-    initGraph (){
-      this.chart = Highcharts.chart('MyChart', options);
+    async init() {
+      const prefs = await this.getPrefList();
+      this.prefs = prefs.map(pref => {
+        pref.disabled = false;
+        return pref;
+      });
     },
-    addSeries(seriesObj){
-      const series = {
-        id: seriesObj.id,
-        name: seriesObj.name,
-        data: seriesObj.data,
+    async getPrefList() {
+      const result = await axios.get(RESAS.domain + RESAS.endPoints.prefectures, RESAS.options)
+        .then((res) => {
+          // ここ綺麗にしたい
+          // RESAS-APIでは成功時、statusCodeはundefined
+          if (res.data.statusCode !== undefined) {
+            console.log('RESAS-API ERROR: ' + res.data.statusCode);
+          }
+          return res.data.result;
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+      return result;
+    },
+    async getPopulationsByCode(prefCode) {
+      const myOptions = {
+        headers: RESAS.options.headers,
+        params: {
+          prefCode: prefCode,
+          cityCode: '-',
+        }
       };
-      this.chart.addSeries(series);
+      const result = await axios.get(RESAS.domain + RESAS.endPoints.populations, myOptions)
+        .then((res) => {
+          // RESAS-APIでは成功時、statusCodeはundefined
+          if (res.data.statusCode !== undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
+            console.log('RESAS-API ERROR: ' + res.data.statusCode);
+          }
+
+          const popsData = res.data.result.data[0].data.map(val => {
+            return [ val.year, val.value ];
+          });
+          return popsData;
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+      return result;
     },
-    removeSeriesById(seriesId) {
-      // ダブルクリック時にgetできない。できていないからか。それまで消せないようにするべきか
-      const targetSeries = this.chart.get(seriesId);
-      if(targetSeries !== undefined){
-        targetSeries.remove();
-      }
+    getPrefNameByCode(prefCode) {
+      return this.prefs.find(pref => pref.prefCode === prefCode).prefName;
     },
+    createQueue(isAdd, id, name=null, data=null) {
+      return {
+        no: this.no++,
+        isAdd: isAdd,
+        id: id,
+        name: name,
+        data: data,
+      };
+    },
+    async addSeriesByCode(prefCode) {
+      this.prefs.find(pref => pref.prefCode === prefCode).disabled = true;
+
+      const populationData = await this.getPopulationsByCode(prefCode);
+      const prefName = this.getPrefNameByCode(prefCode);
+
+      this.queue = this.createQueue(true, prefCode, prefName ,populationData);
+
+    },
+    removeSeriesById(id) {
+      this.queue = this.createQueue(false, id);
+    },
+    unlock(id) {
+      this.prefs.find(pref => pref.prefCode === id).disabled = false;
+    }
   },
   mounted() {
-    this.initGraph();
-  },
+    this.init();
+  }
 }
 
 </script>
@@ -111,8 +147,5 @@ export default {
     padding: .3em 0;
     font-size: 1.5rem;
     letter-spacing: .05em;
-  }
-  #MyChart {
-    border-top: 1px dashed black;
   }
 </style>
