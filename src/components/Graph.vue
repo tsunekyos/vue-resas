@@ -72,7 +72,10 @@ export default {
           id: this.queue.seriesId,
           name: this.queue.seriesName,
           data: this.queue.seriesData,
-        }
+        };
+        this.chart.options.plotOptions.series.events.afterAnimate = () => {
+          //
+        };
         this.addSeries(series);
         this.$emit('complete', this.queue.seriesId);
       } else {
