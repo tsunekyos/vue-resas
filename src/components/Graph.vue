@@ -67,17 +67,16 @@ export default {
   },
   watch: {
     queue: function(){
-      console.log(this.queue);
       if(this.queue.isAdd) {
         const series = {
-          id: this.queue.id,
-          name: this.queue.name,
-          data: this.queue.data,
+          id: this.queue.seriesId,
+          name: this.queue.seriesName,
+          data: this.queue.seriesData,
         }
         this.addSeries(series);
-        this.$emit('complete', this.queue.id);
+        this.$emit('complete', this.queue.seriesId);
       } else {
-        this.removeSeriesById(this.queue.id);
+        this.removeSeriesById(this.queue.seriesId);
       }
     },
   },

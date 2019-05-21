@@ -3,10 +3,10 @@
     .heading: h1 {{ title }}
     pref(
       :prefs='prefs',
-      @add="addSeriesByCode",
+      @add="addSeriesByPrefCode",
       @remove="removeSeriesById"
     )
-    graph(:queue='queue', @complete='unlock')
+    graph(:queue='queue', @complete='enablePrefBtnByPrefCode')
 </template>
 
 <script>
@@ -39,9 +39,9 @@ export default {
       prefs: [],
       queue: {
         isAdd: true,
-        id: 0,
-        name: '',
-        data: [],
+        seriesId: 0,
+        seriesName: '',
+        seriesData: [],
       },
     }
   },
@@ -51,6 +51,7 @@ export default {
     }
   },
   methods: {
+    // 都道府県リストを取得して表示
     async init() {
       const prefs = await this.getPrefList();
       this.prefs = prefs.map(pref => {
@@ -58,8 +59,9 @@ export default {
         return pref;
       });
     },
+    // [{ prefCode, prefName }]
     async getPrefList() {
-      const result = await axios.get(RESAS.domain + RESAS.endPoints.prefectures, RESAS.options)
+      return await axios.get(RESAS.domain + RESAS.endPoints.prefectures, RESAS.options)
         .then((res) => {
           // 成功時、statusCodeはundefined
           if (res.data.statusCode !== undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
@@ -70,58 +72,62 @@ export default {
         .catch((e) => {
           console.error(e);
         });
-      return result;
     },
-    async getPopulationsByCode(prefCode) {
-      const myOptions = {
+
+    // [[ 対象年, 人口数 ], [ 対象年, 人口数 ], ... ]
+    async getPopulationsByPrefCode(prefCode) {
+      const option = {
         headers: RESAS.options.headers,
         params: {
           prefCode: prefCode,
-          cityCode: '-',
+          cityCode: '-', // 全市を対象とする
         }
       };
-      const result = await axios.get(RESAS.domain + RESAS.endPoints.populations, myOptions)
+      return await axios.get(RESAS.domain + RESAS.endPoints.populations, option)
         .then((res) => {
           // 成功時、statusCodeはundefined
           if (res.data.statusCode !== undefined) {
             throw new Error(`RESAS-API ERROR: ${res.data.statusCode}`);
           }
 
-          const popsData = res.data.result.data[0].data.map(val => {
+          const populationData = res.data.result.data[0].data.map(val => {
             return [ val.year, val.value ];
           });
-          return popsData;
+
+          return populationData;
         })
         .catch((e) => {
           console.error(e);
         });
-      return result;
     },
-    getPrefNameByCode(prefCode) {
+    getPrefNameByPrefCode(prefCode) {
       return this.prefs.find(pref => pref.prefCode === prefCode).prefName;
     },
-    createQueue(isAdd, id, name=null, data=null) {
+    createQueue(isAdd, seriesId, seriesName=null, seriesData=null) {
       return {
-        isAdd: isAdd,
-        id: id,
-        name: name,
-        data: data,
+        isAdd,
+        seriesId,
+        seriesName,
+        seriesData,
       };
     },
-    async addSeriesByCode(prefCode) {
-      this.prefs.find(pref => pref.prefCode === prefCode).disabled = true;
+    async addSeriesByPrefCode(prefCode) {
+      this.disablePrefBtnByPrefCode(prefCode);
 
-      const populationData = await this.getPopulationsByCode(prefCode);
-      const prefName = this.getPrefNameByCode(prefCode);
+      const populationData = await this.getPopulationsByPrefCode(prefCode);
+      const prefName = this.getPrefNameByPrefCode(prefCode);
 
-      this.queue = this.createQueue(true, prefCode, prefName ,populationData);
+      this.queue = this.createQueue(true, prefCode, prefName, populationData);
 
     },
     removeSeriesById(id) {
       this.queue = this.createQueue(false, id);
     },
-    unlock(id) {
-      this.prefs.find(pref => pref.prefCode === id).disabled = false;
+    disablePrefBtnByPrefCode(prefCode) {
+      this.prefs.find(pref => pref.prefCode === prefCode).disabled = true;
+    },
+    enablePrefBtnByPrefCode(prefCode) {
+      this.prefs.find(pref => pref.prefCode === prefCode).disabled = false;
     }
   },
   mounted() {
