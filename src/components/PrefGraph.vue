@@ -10,26 +10,50 @@
 import Pref from './Pref.vue'
 
 import Highcharts from 'highcharts';
+import 'highcharts/modules/no-data-to-display.js';
 
 const options = {
   title: {
-    text: '都道府県別人口推移数',
+    text: '',
   },
   chart: {
     backgroundColor: '#f8f8f8',
     showAxes: true,
   },
+  xAxis: {
+    title: {
+      text: '年度',
+      align: 'high',
+      margin: 50,
+    },
+  },
   yAxis: {
     title: {
       text: '人口数',
+      align: 'high',
+      rotation: 0,
+      y: -10,
+      margin: 50,
     },
   },
   legend: {
+    layout: 'vertical',
+    align: 'right',
+    verticalAlign: 'top',
   },
 
   plotOptions: {
   },
-
+  lang: {
+    noData: "Nichts zu anzeigen"
+  },
+  noData: {
+    style: {
+      fontWeight: 'bold',
+      fontSize: '15px',
+      color: '#303030'
+    }
+  },
   series: [],
 }
 
