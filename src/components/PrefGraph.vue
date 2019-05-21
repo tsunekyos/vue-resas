@@ -6,7 +6,7 @@
       @add="addSeriesByPrefCode",
       @remove="removeSeriesById"
     )
-    graph(:queue='queue', @complete='enablePrefBtnByPrefCode')
+    graph(:queue='queue', @complete='changePrefBtnDisable($event, false)')
 </template>
 
 <script>
@@ -112,7 +112,7 @@ export default {
       };
     },
     async addSeriesByPrefCode(prefCode) {
-      this.disablePrefBtnByPrefCode(prefCode);
+      this.changePrefBtnDisable(prefCode, true);
 
       const populationData = await this.getPopulationsByPrefCode(prefCode);
       const prefName = this.getPrefNameByPrefCode(prefCode);
@@ -123,12 +123,9 @@ export default {
     removeSeriesById(id) {
       this.queue = this.createQueue(false, id);
     },
-    disablePrefBtnByPrefCode(prefCode) {
-      this.prefs.find(pref => pref.prefCode === prefCode).disabled = true;
+    changePrefBtnDisable(prefCode, beDisabled) {
+      this.prefs.find(pref => pref.prefCode === prefCode).disabled = beDisabled;
     },
-    enablePrefBtnByPrefCode(prefCode) {
-      this.prefs.find(pref => pref.prefCode === prefCode).disabled = false;
-    }
   },
   mounted() {
     this.init();
