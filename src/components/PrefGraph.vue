@@ -29,7 +29,6 @@ const RESAS = {
   },
 };
 
-
 export default {
   components: {
     Pref,
@@ -113,7 +112,6 @@ export default {
       };
     },
     async addSeriesByCode(prefCode) {
-
       this.prefs.find(pref => pref.prefCode === prefCode).disabled = true;
 
       const populationData = await this.getPopulationsByCode(prefCode);

@@ -4,6 +4,7 @@
     .prefList
       PrefItem(
         v-for='pref in prefs',
+        :key='pref.id'
         :pref='pref',
         @change='changeCheckBox'
       )
@@ -28,15 +29,7 @@ export default {
   methods: {
     async changeCheckBox(e) {
       const targetPrefCode = parseInt(e.target.value, 10);
-      console.log(targetPrefCode);
       if(e.target.checked) {
-        // this.addPrefToGraph(targetPrefCode)
-        // const populationData = await this.getPopulationsByCode(targetPrefCode);
-        // const series = {
-        //   id: targetPrefCode,
-        //   name: this.getPrefNameByCode(targetPrefCode),
-        //   data: data,
-        // }
         this.$emit('add', targetPrefCode);
       } else {
         this.$emit('remove', targetPrefCode);

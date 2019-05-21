@@ -41,19 +41,9 @@ const options = {
     series: {
       events: {
         afterAnimate: function () {
-            console.log('afterAnimate');
+          console.log('afterAnimate');
         }
       }
-    }
-  },
-  lang: {
-    noData: "Nichts zu anzeigen"
-  },
-  noData: {
-    style: {
-      fontWeight: 'bold',
-      fontSize: '15px',
-      color: '#303030'
     }
   },
   series: [],
@@ -70,9 +60,6 @@ export default {
       type: Object,
     }
   },
-  watch: {
-
-  },
   methods: {
     initGraph (){
       this.chart = Highcharts.chart('MyChart', options);
@@ -86,11 +73,7 @@ export default {
       this.chart.addSeries(series);
     },
     removeSeriesById(seriesId) {
-      // ダブルクリック時にgetできない。できていないからか。それまで消せないようにするべきか
-      const targetSeries = this.chart.get(seriesId);
-      if(targetSeries !== undefined){
-        targetSeries.remove();
-      }
+      this.chart.get(seriesId).remove();
     },
   },
   watch: {
