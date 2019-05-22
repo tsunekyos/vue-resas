@@ -18,6 +18,7 @@ const options = {
     marginLeft: 100,
     marginBottom: 100,
     marginRight: 120,
+    animation: false,
   },
   xAxis: {
     title: {
@@ -44,12 +45,10 @@ const options = {
 
   plotOptions: {
     series: {
-      events: {
-        afterAnimate: function () {
-          console.log('afterAnimate');
-        }
+      animation: {
+        duration: 0
       }
-    }
+    },
   },
   series: [],
 }
@@ -73,9 +72,9 @@ export default {
           name: this.queue.seriesName,
           data: this.queue.seriesData,
         };
-        this.chart.options.plotOptions.series.events.afterAnimate = () => {
-          //
-        };
+        // this.chart.options.plotOptions.series.events.afterAnimate = () => {
+        //
+        // };
         this.addSeries(series);
         this.$emit('complete', this.queue.seriesId);
       } else {
