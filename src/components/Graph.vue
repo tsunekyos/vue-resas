@@ -51,6 +51,9 @@ const options = {
     },
   },
   series: [],
+  tooltip: {
+    animation: false,
+  },
 }
 
 export default {
