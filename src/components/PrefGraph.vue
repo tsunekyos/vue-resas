@@ -63,9 +63,10 @@ export default {
     async getPrefList() {
       return await axios.get(RESAS.domain + RESAS.endPoints.prefectures, RESAS.options)
         .then((res) => {
-          // 成功時、statusCodeはundefined
-          if (res.data.statusCode !== undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
-            throw new Error(`RESAS-API ERROR: ${res.data.statusCode}`);
+          console.log(res);
+          // 成功時は、data.resultにArrayが入る
+          if (res.data.result === undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
+            throw new Error(`RESAS-API ERROR: ${res.data.message || res.data}`);
           }
           return res.data.result;
         })
@@ -85,9 +86,10 @@ export default {
       };
       return await axios.get(RESAS.domain + RESAS.endPoints.populations, option)
         .then((res) => {
-          // 成功時、statusCodeはundefined
-          if (res.data.statusCode !== undefined) {
-            throw new Error(`RESAS-API ERROR: ${res.data.statusCode}`);
+          console.log(res);
+          // 成功時は、data.resultにArrayが入る
+          if (res.data.result === undefined) {
+            throw new Error(`RESAS-API ERROR: ${res.data.statusCode || res.data}`);
           }
 
           const populationData = res.data.result.data[0].data.map(val => {
