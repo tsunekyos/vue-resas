@@ -63,7 +63,6 @@ export default {
     async getPrefList() {
       return await axios.get(RESAS.domain + RESAS.endPoints.prefectures, RESAS.options)
         .then((res) => {
-          console.log(res);
           // 成功時は、data.resultにArrayが入る
           if (res.data.result === undefined) { // undefinedはWritableではないため直接比較可能。https://www.ecma-international.org/ecma-262/6.0/#sec-undefined
             throw new Error(`RESAS-API ERROR: ${res.data.message || res.data}`);
@@ -86,7 +85,6 @@ export default {
       };
       return await axios.get(RESAS.domain + RESAS.endPoints.populations, option)
         .then((res) => {
-          console.log(res);
           // 成功時は、data.resultにArrayが入る
           if (res.data.result === undefined) {
             throw new Error(`RESAS-API ERROR: ${res.data.statusCode || res.data}`);
