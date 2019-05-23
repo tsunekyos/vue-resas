@@ -25,6 +25,7 @@ const options = {
       text: '年度',
       align: 'high',
     },
+    gridLineWidth: 1,
   },
   yAxis: {
     title: {
@@ -41,6 +42,8 @@ const options = {
     verticalAlign: 'top',
     x: 0,
     y: 80,
+    itemMarginTop: 3,
+    itemMarginBottom: 3,
   },
 
   plotOptions: {
